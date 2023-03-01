@@ -1,18 +1,14 @@
 import uvicorn
-import schedule
 import time
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from session import database
-from logs.logger import log
-from utils.scraping import get_all_uni, store_in_db
+from src.session import database
+from src.logs import log
+from src.utils.scraping import get_all_uni, store_in_db
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 import threading
-from src import config
-
-
 
 
 def my_function():
@@ -23,10 +19,11 @@ def my_function():
 
 def run_function_every_5_minutes():
     while True:
-        # wait for 15days
+        # wait for 15 days
         time.sleep(1296000)
         # run the function
         my_function()
+
 
 # start a new thread to run the function
 
@@ -53,9 +50,11 @@ app.add_middleware(
 thread = threading.Thread(target=run_function_every_5_minutes)
 thread.start()
 
+
 @app.on_event('startup')
 def init_db():
-    database.init_db()
+    get_all_uni()
+    store_in_db()
 
 
 @app.get('/')
