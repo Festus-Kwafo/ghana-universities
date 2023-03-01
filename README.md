@@ -18,7 +18,7 @@ Next, start the application by running the following command:
 main.py 
 ```
 
-This will start the application on http://localhost:8000.
+This will start the application on http://localhost:8080.
 
 ## API Endpoints
 The application has the following API endpoints:
