@@ -8,6 +8,7 @@ from src.logs import log
 
 def get_all_uni():
     log.info("Data Scraping Started Successfully")
+    data = []
     try:
         url = f"https://www.4icu.org/gh/a-z/"
         page = urlopen(url)
@@ -15,7 +16,7 @@ def get_all_uni():
         soup = BeautifulSoup(html, 'html.parser')
         line = list(soup.find_all('table'))
 
-        data = []
+
         for element in line:
             rows = soup.findAll('tr')
             rows = rows[2:]

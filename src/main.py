@@ -63,9 +63,10 @@ def index():
     return {'info': "Universities in Ghana API info Started Successfully"}
 
 
-@app.get('/all')
+@app.get('/universities')
 def all_uni():
     try:
+
         return JSONResponse(content=get_all_uni())
     except:
         raise HTTPException(status_code=404, detail="Error scraping the web")
