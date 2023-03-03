@@ -12,7 +12,6 @@ import threading
 
 
 def my_function():
-    # replace this with the code you want to run every 5 minutes
     get_all_uni()
     store_in_db()
 
@@ -53,9 +52,13 @@ thread.start()
 
 @app.on_event('startup')
 def init_db():
-    get_all_uni()
-    store_in_db()
-
+    try:
+        get_all_uni()
+        store_in_db()
+    except Exception as e:
+        log.info(e)
+        
+        
 
 @app.get('/')
 def index():
