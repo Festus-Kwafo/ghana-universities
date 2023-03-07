@@ -1,5 +1,5 @@
 # Universities in Ghana API Data
-This is a web application built with FastAPI that scrapes data from https://www.4icu.org/ for universities in Ghana, and exposes them via API endpoints.
+This is an API built with FastAPI that scrapes data from https://www.4icu.org/ for universities in Ghana, and exposes them via API endpoints.
 
 ## Getting Started
 To use the application, you need to have Python 3.6 or later installed on your machine. You can clone this repository or download the code as a zip file.
