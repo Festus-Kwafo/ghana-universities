@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import re
 import mysql.connector
-from src.logs import log
+from logs import log
 
 
 def get_all_uni():
@@ -114,7 +114,7 @@ def store_in_db():
         address = data[i].get('address')
         tel = data[i].get('tel')
         fax = data[i].get('fax')
-        sql_select = "SELECT * FROM data WHERE name = %s AND logo = %s;"
+        sql_select = "SELECT * FROM universities_data WHERE name = %s AND logo = %s;"
         val_select = (name, logo)
         cursor.execute(sql_select, val_select)
         result = cursor.fetchone()
@@ -127,6 +127,8 @@ def store_in_db():
             # Data does not exist, insert it
             sql_insert = "INSERT INTO universities_data (name, ranking, website, logo, description, acronym, founded, motto, colors, address, tel, fax) VALUES (%s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             val_insert = (name, ranking, website, logo, description, acronym, founded, motto, colors, address, tel, fax)
+            print("")
             cursor.execute(sql_insert, val_insert)
+
             db.commit()
     db.close()

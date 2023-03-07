@@ -1,22 +1,23 @@
 import uvicorn
 import time
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from src.session import database
-from src.logs import log
-from src.utils.scraping import get_all_uni, store_in_db
+from session import database
+from logs import log
+from utils.scraping import get_all_uni, store_in_db
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 import threading
-
-
+from sqlmodel import Session
+from schema import UniversitySchema
+from func.handler import get_uni_by_rank
 def my_function():
     get_all_uni()
     store_in_db()
 
 
-def run_function_every_5_minutes():
+def run_function_every_15_days():
     while True:
         # wait for 15 days
         time.sleep(1296000)
@@ -46,7 +47,7 @@ app.add_middleware(
                    "Content-Type: application/json"],
     allow_credentials=["*"])
 
-thread = threading.Thread(target=run_function_every_5_minutes)
+thread = threading.Thread(target=run_function_every_15_days)
 thread.start()
 
 
@@ -69,10 +70,13 @@ def index():
 @app.get('/universities')
 def all_uni():
     try:
-
         return JSONResponse(content=get_all_uni())
     except:
         raise HTTPException(status_code=404, detail="Error scraping the web")
+
+@app.get('/universities/{rank}', response_model=UniversitySchema )
+def get_uni_rank(rank: str, db: Session = Depends(database.get_db)):
+    return get_uni_by_rank(rank, db)
 
 
 if __name__ == "__main__":
