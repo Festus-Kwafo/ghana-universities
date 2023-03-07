@@ -1,6 +1,6 @@
 import uvicorn
 import time
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from session import database
@@ -11,7 +11,9 @@ from strawberry.fastapi import GraphQLRouter
 import threading
 from sqlmodel import Session
 from schema import UniversitySchema
-from func.handler import get_uni_by_rank
+from func.handler import get_uni_by_rank, get_all_uni
+from typing import List
+
 def my_function():
     get_all_uni()
     store_in_db()
@@ -67,12 +69,12 @@ def index():
     return {'info': "Universities in Ghana API info Started Successfully"}
 
 
-@app.get('/universities')
-def all_uni():
+@app.get('/universities', response_model=list[UniversitySchema])
+def all_uni(db: Session = Depends(database.get_db)):
     try:
-        return JSONResponse(content=get_all_uni())
+        return get_all_uni(db)
     except:
-        raise HTTPException(status_code=404, detail="Error scraping the web")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Error")
 
 @app.get('/universities/{rank}', response_model=UniversitySchema )
 def get_uni_rank(rank: str, db: Session = Depends(database.get_db)):
@@ -80,4 +82,4 @@ def get_uni_rank(rank: str, db: Session = Depends(database.get_db)):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host='0.0.0.0', port=8080, reload=True)
+    uvicorn.run("main:app", host='0.0.0.0', port=8080, reload=False)

@@ -7,3 +7,9 @@ def get_uni_by_rank(rank: str, db: Session):
     results = db.exec(statement)
     uni_session = results.one()
     return uni_session
+
+def get_all_uni(db: Session):
+    statement = select(Universities)
+    results = db.execute(statement)
+    uni_session = results.scalars().all()
+    return uni_session
